@@ -1,5 +1,4 @@
 podTemplate(label: 'mypod', containers: [
-        containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
 ],
@@ -8,20 +7,13 @@ podTemplate(label: 'mypod', containers: [
         ]
 ) {
     node('mypod') {
+        def myRepo = checkout scm
         stage('Check running containers') {
             container('docker') {
                 // example to show you can run docker commands when you mount the socket
                 sh 'hostname'
                 sh 'hostname -i'
                 sh 'docker ps'
-            }
-        }
-
-        stage('Clone repository') {
-            container('git') {
-                sh 'whoami'
-                sh 'hostname -i'
-                sh 'git clone -b master git@github.com:ggdn/demo.git'
             }
         }
 
