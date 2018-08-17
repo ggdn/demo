@@ -8,7 +8,7 @@ podTemplate(label: 'mypod', containers: [
         ]
 ) {
     node('mypod') {
-        def myRepo = checkout scm
+        checkout scm
         stage('Maven Build') {
             container('maven') {
                 sh 'mvn clean install'
@@ -19,14 +19,11 @@ podTemplate(label: 'mypod', containers: [
             container('docker') {
                 sh 'docker build -t registry.192.168.99.100.nip.io:443/bcl/demo:1.0 .'
                 sh 'docker push registry.192.168.99.100.nip.io:443/bcl/demo:1.0'
-                sh 'docker ps'
             }
         }
 
         stage('Run kubectl') {
             container('kubectl') {
-                sh "kubectl get pods --namespace=pic"
-                sh "kubectl get pods --namespace=env-production"
                 sh "kubectl apply -f ./deploy.yaml --namespace=env-production"
             }
         }
