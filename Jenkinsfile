@@ -18,7 +18,7 @@ podTemplate(label: 'mypod', containers: [
         stage('Check running containers') {
             container('docker') {
                 sh 'docker build -t bcl/demo:1.0 .'
-                sh 'docker push bcl/demo:1.0'
+                sh 'docker push https://registry.192.168.99.100.nip.io/bcl/demo:1.0'
                 sh 'docker ps'
             }
         }
