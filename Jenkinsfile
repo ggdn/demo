@@ -1,5 +1,6 @@
 podTemplate(label: 'mypod', containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.4-jdk-8-alpine', command: 'cat', ttyEnabled: true),
+        containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.11.2', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
 ],
         volumes: [
@@ -16,8 +17,15 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Check running containers') {
             container('docker') {
-                sh 'docker build -t jenkins:1.0 .'
+                sh 'docker build -t bcl/demo:1.0 .'
+                //sh 'docker push bcl/demo:1.0'
                 sh 'docker ps'
+            }
+        }
+
+        stage('Run kubectl') {
+            container('kubectl') {
+                sh "kubectl get pods"
             }
         }
 
