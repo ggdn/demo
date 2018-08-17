@@ -1,98 +1,28 @@
-pipeline {
-    agent {
-      label "jenkins-maven"
-    }
-    environment {
-      ORG               = 'ggdn'
-      APP_NAME          = 'demo'
-      CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
-    }
-    stages {
-      stage('CI Build and push snapshot') {
-        when {
-          branch 'PR-*'
-        }
-        environment {
-          PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
-          PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
-          HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
-        }
-        steps {
-          container('maven') {
-            sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
-            sh "mvn install"
-            sh 'export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml'
-
-
-            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
-          }
-
-          dir ('./charts/preview') {
-           container('maven') {
-             sh "make preview"
-             sh "jx preview --app $APP_NAME --dir ../.."
-           }
-          }
-        }
-      }
-      stage('Build Release') {
-        when {
-          branch 'master'
-        }
-        steps {
-          container('maven') {
-            // ensure we're not on a detached head
-            sh "git checkout master"
-            sh "git config --global credential.helper store"
-
-            sh "jx step git credentials"
-            // so we can retrieve the version in later steps
-            sh "echo \$(jx-release-version) > VERSION"
-            sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-          }
-          dir ('./charts/demo') {
-            container('maven') {
-              sh "make tag"
+podTemplate(label: 'mypod', containers: [
+    containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+  ]
+  ) {
+    node('mypod') {
+        stage('Check running containers') {
+            container('docker') {
+                // example to show you can run docker commands when you mount the socket
+                sh 'hostname'
+                sh 'hostname -i'
+                sh 'docker ps'
             }
-          }
-          container('maven') {
-            sh 'mvn clean deploy'
-
-            sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
-
-
-            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
-          }
         }
-      }
-      stage('Promote to Environments') {
-        when {
-          branch 'master'
-        }
-        steps {
-          dir ('./charts/demo') {
+
+        stage('Maven Build') {
             container('maven') {
-              sh 'jx step changelog --version v\$(cat ../../VERSION)'
-
-              // release the helm chart
-              sh 'jx step helm release'
-
-              // promote through all 'Auto' promotion Environments
-              sh 'jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)'
+                sh 'hostname'
+                sh 'hostname -i'
+                sh 'mvn clean install'
             }
-          }
-        }
-      }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-        failure {
-            input """Pipeline failed. 
-We will keep the build pod around to help you diagnose any failures. 
-
-Select Proceed or Abort to terminate the build pod"""
         }
     }
-  }
+}
