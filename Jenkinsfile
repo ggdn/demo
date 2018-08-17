@@ -8,23 +8,18 @@ podTemplate(label: 'mypod', containers: [
 ) {
     node('mypod') {
         def myRepo = checkout scm
+        stage('Maven Build') {
+            container('maven') {
+                sh 'mvn clean install'
+            }
+        }
+
         stage('Check running containers') {
             container('docker') {
-                // example to show you can run docker commands when you mount the socket
-                sh 'hostname'
-                sh 'hostname -i'
+                sh 'docker build -t jenkins:1.0 .'
                 sh 'docker ps'
             }
         }
 
-        stage('Maven Build') {
-            container('maven') {
-                dir('demo/') {
-                    sh 'hostname'
-                    sh 'hostname -i'
-                    sh 'mvn clean install'
-                }
-            }
-        }
     }
 }
