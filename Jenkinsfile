@@ -25,8 +25,8 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Run kubectl') {
             container('kubectl') {
-                sh "kubectl apply -f ./deploy.yaml"
                 sh "kubectl get pods"
+                sh "kubectl apply -f ./deploy.yaml --namespace=default"
             }
         }
 
