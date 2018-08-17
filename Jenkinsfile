@@ -18,13 +18,14 @@ podTemplate(label: 'mypod', containers: [
         stage('Check running containers') {
             container('docker') {
                 sh 'docker build -t bcl/demo:1.0 .'
-                //sh 'docker push bcl/demo:1.0'
+                sh 'docker push bcl/demo:1.0'
                 sh 'docker ps'
             }
         }
 
         stage('Run kubectl') {
             container('kubectl') {
+                sh "kubectl apply -f ./deploy.yaml"
                 sh "kubectl get pods"
             }
         }
