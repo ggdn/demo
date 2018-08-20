@@ -1,7 +1,10 @@
 package lu.bcl.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,13 +18,14 @@ public class TestController {
     Environment env;
 
     @GetMapping
-    public Map<String, String> test() {
-        Map<String, String> map = new HashMap<>();
-        map.put("KUBERNETES_NODE_NAME", env.getProperty("KUBERNETES_NODE_NAME"));
-        map.put("KUBERNETES_POD_NAME", env.getProperty("KUBERNETES_POD_NAME"));
-        map.put("KUBERNETES_POD_NAMESPACE", env.getProperty("KUBERNETES_POD_NAMESPACE"));
-        map.put("KUBERNETES_POD_IP", env.getProperty("KUBERNETES_POD_IP"));
-        map.put("KUBERNETES_POD_SERVICE_ACCOUNT", env.getProperty("KUBERNETES_POD_SERVICE_ACCOUNT"));
+    public Map<String, Object> test() {
+        Map<String, Object> map = new HashMap<>();
+
+        for (PropertySource<?> propertySource1 : ((AbstractEnvironment) env).getPropertySources()) {
+            if (propertySource1 instanceof MapPropertySource) {
+                map.putAll(((MapPropertySource) propertySource1).getSource());
+            }
+        }
         return map;
     }
 
