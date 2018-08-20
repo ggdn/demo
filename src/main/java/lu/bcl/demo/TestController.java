@@ -21,7 +21,6 @@ public class TestController {
         map.put("KUBERNETES_POD_NAME", env.getProperty("KUBERNETES_POD_NAME"));
         map.put("KUBERNETES_POD_NAMESPACE", env.getProperty("KUBERNETES_POD_NAMESPACE"));
         map.put("KUBERNETES_POD_IP", env.getProperty("KUBERNETES_POD_IP"));
-        map.put("KUBERNETES_POD_SERVICE_ACCOUNT", env.getProperty("KUBERNETES_POD_SERVICE_ACCOUNT"));
         return map;
     }
 
