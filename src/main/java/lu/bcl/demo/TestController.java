@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,12 +20,13 @@ public class TestController {
     @GetMapping
     public Map<String, Object> test() {
         Map<String, Object> map = new HashMap<>();
-        map.putAll(((MapPropertySource)((AbstractEnvironment) env).getPropertySources().get("HOSTNAME")).getSource());
-        map.putAll(((MapPropertySource)((AbstractEnvironment) env).getPropertySources().get("KUBERNETES_NODE_NAME")).getSource());
-        map.putAll(((MapPropertySource)((AbstractEnvironment) env).getPropertySources().get("KUBERNETES_POD_NAME")).getSource());
-        map.putAll(((MapPropertySource)((AbstractEnvironment) env).getPropertySources().get("KUBERNETES_POD_NAMESPACE")).getSource());
-        map.putAll(((MapPropertySource)((AbstractEnvironment) env).getPropertySources().get("KUBERNETES_POD_IP")).getSource());
-        map.putAll(((MapPropertySource)((AbstractEnvironment) env).getPropertySources().get("KUBERNETES_POD_SERVICE_ACCOUNT")).getSource());
+
+        for (PropertySource<?> propertySource1 : ((AbstractEnvironment) env).getPropertySources()) {
+            if (propertySource1 instanceof MapPropertySource) {
+                if(propertySource1.getName().startsWith("KUB"))
+                    map.putAll(((MapPropertySource) propertySource1).getSource());
+            }
+        }
         return map;
     }
 
