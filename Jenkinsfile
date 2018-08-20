@@ -21,7 +21,7 @@ podTemplate(label: 'mypod', containers: [
                 def name = "registry.192.168.99.100.nip.io:443/bcl/demo"
                 def img = name+":"+commitHash
                 def latest = name+":latest"
-                sh 'docker build -t '+name+' .'
+                sh 'docker build -t '+img+' .'
                 sh 'docker tag '+img+' '+latest
                 sh 'docker push '+name
             }
