@@ -15,7 +15,6 @@ spec:
       containers:
         - name: demo
           image: registry.192.168.99.100.nip.io:443/bcl/demo:latest
-          imagePullPolicy: Always
           ports:
             - name: http-port
               containerPort: 8080
