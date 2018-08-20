@@ -8,9 +8,6 @@ podTemplate(label: 'mypod', containers: [
         ]
 ) {
     node('mypod') {
-        properties([
-                pipelineTriggers([cron('* * * * *')]),
-        ])
         def scmVars = checkout scm
         def commitHash = scmVars.GIT_COMMIT
         stage('Maven Build') {
