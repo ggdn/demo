@@ -15,7 +15,7 @@ podTemplate(label: 'mypod', containers: [
         def latest = name+":latest"
         stage('Maven Build') {
             container('maven') {
-                sh 'mvn clean install'
+                sh 'mvn clean install -B'
             }
         }
 
@@ -30,7 +30,7 @@ podTemplate(label: 'mypod', containers: [
         stage('Run kubectl') {
             container('kubectl') {
                 sh "kubectl apply -f ./deploy.yaml --namespace=env-production"
-                sh "kubectl rolling-update demo --image-pull-policy Always --namespace=env-production --image="+latest
+                sh "kubectl set image deployment/demo --namespace=env-production demo="+img
             }
         }
 
