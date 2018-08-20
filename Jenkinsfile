@@ -32,7 +32,7 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Run kubectl') {
             container('kubectl') {
-                sh "kubectl apply -f ./deploy.yaml --namespace=env-production"
+                sh "kubectl apply -f ./deploy.yaml --namespace=env-production --image="+latest
             }
         }
 
