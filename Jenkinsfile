@@ -17,8 +17,13 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Check running containers') {
             container('docker') {
-                sh 'docker build -t registry.192.168.99.100.nip.io:443/bcl/demo:1.0 .'
-                sh 'docker push registry.192.168.99.100.nip.io:443/bcl/demo:1.0'
+                def name = "registry.192.168.99.100.nip.io:443/bcl/demo"
+                def tag = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+                def img = name+":"+tag
+                def latest = name+":latest"
+                sh 'docker build -t '+name+' .'
+                sh 'docker tag '+img+' '+latest
+                sh 'docker push '+name
             }
         }
 
