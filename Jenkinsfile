@@ -8,7 +8,8 @@ podTemplate(label: 'mypod', containers: [
         ]
 ) {
     node('mypod') {
-        checkout scm
+        def scmVars = checkout scm
+        def commitHash = scmVars.GIT_COMMIT
         stage('Maven Build') {
             container('maven') {
                 sh 'mvn clean install'
@@ -18,8 +19,7 @@ podTemplate(label: 'mypod', containers: [
         stage('Check running containers') {
             container('docker') {
                 def name = "registry.192.168.99.100.nip.io:443/bcl/demo"
-                def tag = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
-                def img = name+":"+tag
+                def img = name+":"+commitHash
                 def latest = name+":latest"
                 sh 'docker build -t '+name+' .'
                 sh 'docker tag '+img+' '+latest
