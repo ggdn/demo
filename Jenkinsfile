@@ -29,7 +29,8 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Run kubectl') {
             container('kubectl') {
-                sh "kubectl apply -f ./deploy.yaml --namespace=env-production --image="+latest
+                sh "kubectl apply -f ./deploy.yaml --namespace=env-production"
+                sh "kubectl rolling-update demo --image-pull-policy Always --namespace=env-production --image="+latest
             }
         }
 
