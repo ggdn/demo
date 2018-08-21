@@ -24,4 +24,9 @@ public class TestController {
         return map;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
 }
