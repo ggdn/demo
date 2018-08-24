@@ -1,10 +1,12 @@
 package lu.bcl.demo;
 
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,9 +26,15 @@ public class TestController {
         return map;
     }
 
-    @GetMapping("/test")
-    public String test2() {
-        return "test2";
+    @GetMapping("/restricted")
+    public String restrictedArea() {
+        return "Access granted";
+    }
+
+    @GetMapping(path = "/logout")
+    public String logout(HttpServletRequest request) throws ServletException {
+        request.logout();
+        return "/";
     }
 
 }
