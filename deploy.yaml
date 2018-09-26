@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: demo
-          image: registry.192.168.99.100.nip.io:443/bcl/demo:latest
+          image: registry.pic:5000/bcl/demo:latest
           imagePullPolicy: Always
           ports:
             - name: http-port
@@ -52,20 +52,20 @@ spec:
       targetPort: 8080
   selector:
     app: demo
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: demo-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-  - host: demo.192.168.99.100.nip.io
-    http:
-      paths:
-      - backend:
-          serviceName: demo
-          servicePort: 8080
-        path: /
+#---
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: demo-ingress
+#  annotations:
+#    kubernetes.io/ingress.class: "nginx"
+#    ingress.kubernetes.io/rewrite-target: /
+#spec:
+#  rules:
+#  - host: demo.192.168.99.100.nip.io
+#    http:
+#      paths:
+#      - backend:
+#          serviceName: demo
+#          servicePort: 8080
+#        path: /
