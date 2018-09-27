@@ -25,7 +25,7 @@ podTemplate(label: 'mypod', containers: [
                 imageBuilded = docker.build(img)    
                 sh 'docker tag '+img+' '+latest
                 docker.withRegistry('https://gcr.io', 'gcr:winter-campus-211113') { 
-                        docker.push('latest')
+                        imageBuilded.push('latest')
                 }     
             }
         }
