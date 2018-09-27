@@ -11,7 +11,7 @@ podTemplate(label: 'mypod', containers: [
         def imageBuilded 
         def scmVars = checkout scm
         def commitHash = scmVars.GIT_COMMIT
-        def name = "gcr.io/bcl/demo"
+        def name = "gcr.io/winter-campus-211113/demo"
         def img = name+":"+commitHash
         def latest = name+":latest"
         stage('Maven Build') {
@@ -23,7 +23,6 @@ podTemplate(label: 'mypod', containers: [
         stage('Check running containers') {
             container('docker') {
                 imageBuilded = docker.build(img)    
-                sh 'docker tag '+img+' '+latest
                 docker.withRegistry('https://gcr.io', 'gcr:winter-campus-211113') { 
                         imageBuilded.push('latest')
                 }     
