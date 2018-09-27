@@ -1,5 +1,6 @@
 package lu.bcl.demo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Slf4j
 public class TestController {
 
     @Autowired
@@ -18,6 +20,7 @@ public class TestController {
 
     @GetMapping
     public Map<String, String> test() {
+        log.debug("test");
         Map<String, String> map = new HashMap<>();
         map.put("KUBERNETES_NODE_NAME", env.getProperty("KUBERNETES_NODE_NAME"));
         map.put("KUBERNETES_POD_NAME", env.getProperty("KUBERNETES_POD_NAME"));
