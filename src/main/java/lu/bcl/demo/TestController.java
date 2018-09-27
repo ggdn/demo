@@ -20,7 +20,7 @@ public class TestController {
 
     @GetMapping
     public Map<String, String> test() {
-        log.debug("test");
+        log.info("test");
         Map<String, String> map = new HashMap<>();
         map.put("KUBERNETES_NODE_NAME", env.getProperty("KUBERNETES_NODE_NAME"));
         map.put("KUBERNETES_POD_NAME", env.getProperty("KUBERNETES_POD_NAME"));
