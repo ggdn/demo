@@ -8,6 +8,7 @@ podTemplate(label: 'mypod', containers: [
         ]
 ) {
     node('mypod') {
+        def imageBuilded 
         def scmVars = checkout scm
         def commitHash = scmVars.GIT_COMMIT
         def name = "gcr.io/bcl/demo"
@@ -21,8 +22,11 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Check running containers') {
             container('docker') {
-                sh 'docker build -t '+img+' .'
+                myImage = docker.build(img)    
                 sh 'docker tag '+img+' '+latest
+                docker.withRegistry('https://gcr.io', 'gcr:our-gc-credentials') { 
+                        docker.push(name)
+                }     
                 sh 'docker push '+name
             }
         }
