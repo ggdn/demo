@@ -10,7 +10,7 @@ podTemplate(label: 'mypod', containers: [
     node('mypod') {
         def scmVars = checkout scm
         def commitHash = scmVars.GIT_COMMIT
-        def name = "registry.35.186.226.213.nip.io/bcl/demo"
+        def name = "registry.35.193.56.167.nip.io/bcl/demo"
         def img = name+":"+commitHash
         def latest = name+":latest"
         stage('Maven Build') {
