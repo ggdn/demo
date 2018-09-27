@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: demo
-          image: registry.35.186.226.213.nip.io/bcl/demo:latest
+          image: registry.35.193.56.167.nip.io/bcl/demo:latest
           imagePullPolicy: Always
           ports:
             - name: http-port
