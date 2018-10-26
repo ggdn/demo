@@ -5,33 +5,29 @@ management:
       exposure:
         include: '*'
 
-kc:
-  base-url: http://keycloak.35.193.56.167.nip.io/auth
+keycloak-client:
+  server-url: http://keycloak.35.193.56.167.nip.io/auth
   realm: POC
-  realm-url: ${kc.base-url}/realms/${kc.realm}
+  registration-id: my-keycloak
 
 spring:
-  main:
-    banner-mode: console
   security:
     oauth2:
       client:
         registration:
-          demo:
+          # This 'Demo:' is the id used inside the redirect-uri-template and must be the same as your realm
+          my-keycloak:
             client-id: demo-app
-            client-name: demo-appp
             client-secret: 4ebc8b9e-97ad-4aab-bbdc-044a563ef17e
+            client-name: demo-appt
             provider: keycloak
-            authorization-grant-type: authorization_code
             scope: openid, profile
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
         provider:
           keycloak:
-            authorization-uri: ${kc.realm-url}/protocol/openid-connect/auth
-            jwk-set-uri: ${kc.realm-url}/protocol/openid-connect/certs
-            token-uri: ${kc.realm-url}/protocol/openid-connect/token
-            # would be cool if there was a end-session-uri to propagate logouts
-
-            #  User info endpoint not needed since Keycloak uses self-contained value tokens
-            #            user-info-uri: ${kc.realm-url}/protocol/openid-connect/userinfo
+            token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
+            authorization-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/auth
+            user-info-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/userinfo
+            jwk-set-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/certs
             user-name-attribute: preferred_username

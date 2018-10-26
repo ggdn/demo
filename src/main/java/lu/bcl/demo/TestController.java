@@ -31,7 +31,7 @@ public class TestController {
     }
 
     @GetMapping("/restricted")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     public String restrictedArea() {
         return "Access granted";
     }
