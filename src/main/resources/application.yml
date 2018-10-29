@@ -5,29 +5,9 @@ management:
       exposure:
         include: '*'
 
-keycloak-client:
-  server-url: http://keycloak.35.193.56.167.nip.io/auth
+keycloak:
+  auth-server-url: http://keycloak.35.193.56.167.nip.io/auth/
+  resource: demo-app
   realm: POC
-  registration-id: my-keycloak
-
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          # This 'Demo:' is the id used inside the redirect-uri-template and must be the same as your realm
-          my-keycloak:
-            client-id: demo-app
-            client-secret: 4ebc8b9e-97ad-4aab-bbdc-044a563ef17e
-            client-name: demo-appt
-            provider: keycloak
-            scope: openid, profile
-            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
-            authorization-grant-type: authorization_code
-        provider:
-          keycloak:
-            token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
-            authorization-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/auth
-            user-info-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/userinfo
-            jwk-set-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/certs
-            user-name-attribute: preferred_username
+  public-client: true
+  principal-attribute: preferred_username
