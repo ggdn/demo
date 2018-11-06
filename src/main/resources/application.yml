@@ -20,7 +20,7 @@ spring:
         registration:
           keycloak:
             client-id: demo-app
-            client-secret: demo-app
+            client-secret: 4ebc8b9e-97ad-4aab-bbdc-044a563ef17e
             clientName: Keycloak
             authorization-grant-type: authorization_code
             redirectUriTemplate: '{baseUrl}/login/oauth2/code/{registrationId}'
