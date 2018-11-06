@@ -8,11 +8,30 @@ management:
 
 keycloak:
   auth-server-url: http://keycloak.35.193.56.167.nip.io/auth/
-  resource: demo-app
   realm: POC
-  public-client: true
-  principal-attribute: preferred_username
-  ssl-required: external
 
 server:
   connection-timeout: 5000ms
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: demo-app
+            client-secret: demo-app
+            clientName: Keycloak
+            authorization-grant-type: authorization_code
+            redirectUriTemplate: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope:
+            - openid
+            - profile
+            - email
+        provider:
+          keycloak:
+            authorization-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/auth
+            token-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token
+            user-info-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/userinfo
+            jwk-set-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
