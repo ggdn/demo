@@ -44,6 +44,7 @@ public class TestController {
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(), authentication.getName());
         data.put("userName", authentication.getName());
+        data.put("attributes", authentication.getPrincipal().getAttributes());
         data.put("clientName", authorizedClient.getClientRegistration().getClientName());
         return data;
     }
