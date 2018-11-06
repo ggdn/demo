@@ -7,7 +7,7 @@ management:
 
 
 keycloak:
-  auth-server-url: http://keycloak.35.193.56.167.nip.io/auth/
+  auth-server-url: http://keycloak.35.193.56.167.nip.io/auth
   realm: POC
 
 server:
