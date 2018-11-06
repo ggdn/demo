@@ -8,7 +8,7 @@ podTemplate(label: 'mypod', containers: [
         ]
 ) {
     node('mypod') {
-        def imageBuilded 
+        def imageBuilded
         def scmVars = checkout scm
         def commitHash = scmVars.GIT_COMMIT
         def name = "gcr.io/winter-campus-211113/demo"
@@ -22,18 +22,18 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Check running containers') {
             container('docker') {
-                imageBuilded = docker.build(img)    
-                docker.withRegistry('https://gcr.io', 'gcr:winter-campus-211113') { 
-                        imageBuilded.push('latest')
-                }     
+                imageBuilded = docker.build(img)
+                docker.withRegistry('https://gcr.io', 'gcr:winter-campus-211113') {
+                    imageBuilded.push()
+                    imageBuilded.push('latest')
+                }
             }
         }
 
         stage('Run kubectl') {
             container('kubectl') {
                 sh "kubectl apply -f ./deploy.yaml --namespace=env-production"
-                sh "kubectl set image deployment/demo --namespace=env-production demo="+name
-                sh "kubectl set image deployment/demo --namespace=env-production demo="+latest
+                sh "kubectl set image deployment/demo --namespace=env-production demo="+img
                 sh "kubectl rollout status deployment/demo --namespace=env-production"
             }
         }
